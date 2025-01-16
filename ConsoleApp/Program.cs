@@ -7,17 +7,17 @@ using System.Net;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
         string baseUrl = configuration["ApiSettings:BaseUrl"];
 
-        Do(baseUrl);
+        await Do(baseUrl);
     }
 
-    private static void Do(string BaseUrl)
+    private static async Task Do(string BaseUrl)
     {
         GeneratorNums generator = new GeneratorNums();
 
@@ -34,11 +34,15 @@ internal class Program
         foreach (var item in SortList)
             Console.Write(item + " ");
 
-        string json = JsonSerializer.Serialize(SortList);
+        Console.WriteLine();
 
-        ConsoleApp.HttpRequestHelper.GetRequest(json, BaseUrl);
+        SendRequest(SortList, BaseUrl);
+    }
+    private static async Task SendRequest(List<int> data, string url)
+    {
+        string json = JsonSerializer.Serialize(data);
 
-        Console.ReadKey();
+        await ConsoleApp.HttpRequestHelper.GetRequest(json, url);
     }
 
 }

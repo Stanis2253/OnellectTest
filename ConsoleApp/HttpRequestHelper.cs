@@ -10,22 +10,28 @@ namespace ConsoleApp
     {
         public static async Task GetRequest(string json, string url)
         {
-            using HttpClient client = new HttpClient();
-
-            // Упаковка данных в тело запроса
-            HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
-            // Отправка POST-запроса
-            HttpResponseMessage response = await client.PostAsync(url, content);
-
-            // Обработка ответа
-            if (response.IsSuccessStatusCode)
+            try
             {
-                string responseBody = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Response: {responseBody}");
+                using HttpClient client = new HttpClient();
+                // Упаковка данных в тело запроса
+                HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
+                // Отправка POST-запроса
+                HttpResponseMessage response = await client.PostAsync(url, content);
+
+                // Обработка ответа
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Response: {responseBody}");
+                }
+                else
+                {
+                    Console.WriteLine($"Error: {response.StatusCode}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Console.WriteLine($"Error: {response.StatusCode}");
+                Console.WriteLine(ex.Message);
             }
         }
     }
